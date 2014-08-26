@@ -84,7 +84,7 @@ module.exports = function (hoodie, cb) {
     
     //listen for tasks to set status
     var social = new socialApi();
-    hoodie.task.on('add:setstatus', function (db, doc) {
+    hoodie.task.on('setstatus:add', function (db, doc) {
         if (socialTasks.indexOf(doc.id) > -1) return false;
         socialTasks.push(doc.id); //only try to process once (workaround for mutiple repeated calls)
                 
@@ -103,7 +103,7 @@ module.exports = function (hoodie, cb) {
     });
     
     //listen for getprofile tasks
-    hoodie.task.on('add:getprofile', function (db, doc) {
+    hoodie.task.on('getprofile:add', function (db, doc) {
         if (socialTasks.indexOf(doc.id) > -1) return false;
         socialTasks.push(doc.id); //only try to process once (workaround for mutiple repeated calls)
             
@@ -122,7 +122,7 @@ module.exports = function (hoodie, cb) {
     });
     
     //listen for getcontacts tasks
-    hoodie.task.on('add:getcontacts', function (db, doc) {
+    hoodie.task.on('getcontacts:add', function (db, doc) {
         if (socialTasks.indexOf(doc.id) > -1) return false;
         socialTasks.push(doc.id); //only try to process once (workaround for mutiple repeated calls)
             
@@ -141,7 +141,7 @@ module.exports = function (hoodie, cb) {
     });
     
     //listen for getfollowers tasks
-    hoodie.task.on('add:getfollowers', function (db, doc) {
+    hoodie.task.on('getfollowers:add', function (db, doc) {
         if (socialTasks.indexOf(doc.id) > -1) return false;
         socialTasks.push(doc.id); //only try to process once (workaround for mutiple repeated calls)
             

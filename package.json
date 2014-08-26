@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-social",
-  "version": "0.9.10",
+  "version": "0.10.0",
   "description": "A plugin to add social integration to Hoodie",
   "author": {
     "name": "Dale Shaw",
@@ -16,16 +16,16 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/inator/hoodie-plugin-social"
+    "url": "https://github.com/appback/hoodie-plugin-social"
   },
   "keywords": [
     "hoodie",
     "social",
     "authentication"
   ],
-  "homepage": "https://github.com/inator/hoodie-plugin-social",
+  "homepage": "http://code.appback.com/hoodie-social-plugin",
   "bugs": {
-    "url": "https://github.com/inator/hoodie-plugin-social/issues"
+    "url": "https://github.com/appback/hoodie-plugin-social/issues"
   },
   "dependencies": {
     "express": "3.4.4",
@@ -41,7 +41,7 @@
     "compare-version": "0.1.1"
   },
   "peerDependencies": {
-    "hoodie-server": ">= 0.8.14"
+    "hoodie-server": ">=1.2.4"
   },
   "main": "index.js",
   "readmeFilename": "README.md"

@@ -7,7 +7,7 @@ Hoodie.extend(function(hoodie) {
     *   Social Login method
     */
     hoodie.account.socialLogin = function(providerName, /*optional*/options) {
-        var defer = hoodie.defer();
+        var defer = window.jQuery.Deferred();
 
         // open popup immediately to prevent it from being blocked
         var popup;
@@ -22,7 +22,7 @@ Hoodie.extend(function(hoodie) {
     *   Social Connect method
     */
     hoodie.account.socialConnect = function(providerName, /*optional*/options) {
-        var defer = hoodie.defer();
+        var defer = window.jQuery.Deferred();
         
         if (!hoodie.account.hasAccount()) {
             return defer.reject(new Error('Must be logged in!'));
@@ -41,7 +41,7 @@ Hoodie.extend(function(hoodie) {
     *   Social Set Status method
     */
     hoodie.account.socialSetStatus = function(options) {
-        var defer = hoodie.defer();
+        var defer = window.jQuery.Deferred();
         
         if (!hoodie.account.hasAccount()) {
             return defer.reject(new Error('Must be logged in!'));
@@ -62,7 +62,7 @@ Hoodie.extend(function(hoodie) {
     *   Social Get Profile method
     */
     hoodie.account.socialGetProfile = function(provider, /*optional*/options) {
-        var defer = hoodie.defer();
+        var defer = window.jQuery.Deferred();
         
         if (!hoodie.account.hasAccount()) {
             return defer.reject(new Error('Must be logged in!'));
@@ -83,7 +83,7 @@ Hoodie.extend(function(hoodie) {
     *   Social Get Contacts method
     */
     hoodie.account.socialGetContacts = function(provider, /*optional*/options) {
-        var defer = hoodie.defer();
+        var defer = window.jQuery.Deferred();
         
         if (!hoodie.account.hasAccount()) {
             return defer.reject(new Error('Must be logged in!'));
@@ -104,7 +104,7 @@ Hoodie.extend(function(hoodie) {
     *   Social Get Followers method
     */
     hoodie.account.socialGetFollowers = function(provider, /*optional*/options) {
-        var defer = hoodie.defer();
+        var defer = window.jQuery.Deferred();
         
         if (!hoodie.account.hasAccount()) {
             return defer.reject(new Error('Must be logged in!'));
