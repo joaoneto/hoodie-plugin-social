@@ -6,8 +6,9 @@
 var express = require('express');
 var passport = require('passport');
 var util = require('util');
-var ports = require('ports');
 var appName = require('../../package.json').name;
+var ports = require('ports');
+var port = ports.getPort(appName+'-hoodie-plugin-social');
 var compareVersion = require('compare-version');
 var hoodieServerVer = require('../hoodie-server/package.json').version;
 var facebookStrategy = require('passport-facebook').Strategy;
@@ -40,14 +41,12 @@ authServer.use(function (req, res, next) {
 //run the rest in the hoodie context
 module.exports = function (hoodie, cb) {    
     //check for plugin config items and set if not there
-    if (!hoodie.config.get('port')) hoodie.config.set('port', ports.getPort(appName+'-hoodie-plugin-social'));
     if (!hoodie.config.get('facebook_config')) hoodie.config.set('facebook_config', {"enabled":false,"settings":{"clientID":"","clientSecret":""}});
     if (!hoodie.config.get('twitter_config')) hoodie.config.set('twitter_config', {"enabled":false,"settings":{"consumerKey":"","consumerSecret":""}});
     if (!hoodie.config.get('google_config')) hoodie.config.set('google_config', {"enabled":false,"settings":{}});
     
     //get the CouchDB config then setup proxy
     hoodie.request('get', '_config', {}, function(err, data){
-        var port = hoodie.config.get('port');
         if (!data.httpd_global_handlers._auth || (data.httpd_global_handlers._auth.indexOf(port) == -1)) {
             var value = '{couch_httpd_proxy, handle_proxy_req, <<"http://0.0.0.0:'+port+'">>}';
             hoodie.request('PUT', '_config/httpd_global_handlers/_auth/', {data:JSON.stringify(value)},function(err, data){
@@ -394,7 +393,6 @@ module.exports = function (hoodie, cb) {
     }
     
     //start the server on load
-    var port = hoodie.config.get('port');
     authServer.listen(port);
     console.log('Hoodie Social Plugin: Listening on port '+port);
     
