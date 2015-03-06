@@ -5,8 +5,23 @@
  
 $(function () {
 
-    var getConfig = _.partial(couchr.get, '/_api/plugins/'+encodeURIComponent('plugin/hoodie-plugin-social'));
-    var setConfig = _.partial(couchr.put, '/_api/plugins/'+encodeURIComponent('plugin/hoodie-plugin-social'));
+    var hoodieAdmin = top.hoodieAdmin;
+    var configDocId = encodeURIComponent('plugin/hoodie-plugin-social');
+    var configUrl = '/plugins/' + configDocId;
+
+    function getConfig(callback) {
+        hoodieAdmin.request('GET', configUrl)
+            .fail(function (error) { callback(error); })
+            .done(function (response) { callback(null, response); });
+    }
+
+    function setConfig(doc, callback) {
+        hoodieAdmin.request('PUT', configUrl, {
+          data: JSON.stringify(doc)
+        })
+            .fail(function (error) { callback(error); })
+            .done(function (response) { callback(null, response); });
+    }
 
     function updateConfig(obj, callback) {
         getConfig(function (err, doc) {
@@ -40,7 +55,7 @@ $(function () {
         $('[name=googleClientSecret]').val(doc.config.google_config.settings.clientSecret);
         
     });
-  
+
     //listen for submit button
     $('#submitBtn').on('click', function() {
         $('form').first().submit();
