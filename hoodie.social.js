@@ -128,7 +128,8 @@ Hoodie.extend(function(hoodie) {
         var settings = $.extend({
                 attemptLimit:     20,
                 interval:         3000,
-                authServerUri:    hoodie.baseUrl+'/_api/_auth',
+                // authServerUri:    hoodie.baseUrl+'/_auth',
+                authServerUri:    'http://127.0.0.1:6003/_auth',
                 destroy:          true
             }, options);
             
@@ -149,6 +150,7 @@ Hoodie.extend(function(hoodie) {
                     $.ajax({
                         url: settings.authServerUri+appendUri,
                         dataType: 'json',
+                        crossDomain: true,
                         xhrFields: { withCredentials: true }, /* for cross domain support*/
                         success: function(data){
                             //Check if authenticated or connected and return data or keep polling
