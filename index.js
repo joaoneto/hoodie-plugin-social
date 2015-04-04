@@ -10,8 +10,8 @@ var appName = 'appback-social-example';
 var ports = require('ports');
 var port = ports.getPort(appName + '-hoodie-plugin-social');
 var compareVersion = require('compare-version');
-// var hoodieServerVer = require('../hoodie-server/package.json').version;
-var hoodieServerVer = require(__dirname + '/../' + appName + '/node_modules/hoodie-server/package.json').version;
+var hoodieServerVer = require('../hoodie-server/package.json').version;
+//var hoodieServerVer = require(__dirname + '/../' + appName + '/node_modules/hoodie-server/package.json').version;
 
 var socialApi = require('./social_api.js');
 var moment = require('moment');
