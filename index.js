@@ -14,7 +14,7 @@ var util = require('util');
 
 // var appName = require('../../package.json').name;
 var appName = require('./package.json').name
-            || require('../../package.json');
+            || require('../../package.json').name;
 
 var ports = require('ports');
 var port = ports.getPort(appName + '-hoodie-plugin-social');
