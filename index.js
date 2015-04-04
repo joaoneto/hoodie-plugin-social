@@ -5,8 +5,8 @@
 //set some vars
 var util = require('util');
 var passport = require('passport');
-// var appName = require('../../package.json').name;
-var appName = 'appback-social-example';
+var appName = require('../../package.json').name;
+//var appName = 'appback-social-example';
 var ports = require('ports');
 var port = ports.getPort(appName + '-hoodie-plugin-social');
 var compareVersion = require('compare-version');
