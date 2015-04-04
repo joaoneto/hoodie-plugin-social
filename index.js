@@ -13,7 +13,7 @@ var passport = require('passport');
 var util = require('util');
 
 // var appName = require('../../package.json').name;
-var appName = require('./package.json')
+var appName = require('./package.json').name
             || require('../../package.json');
 
 var ports = require('ports');
