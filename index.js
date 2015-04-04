@@ -37,11 +37,6 @@ var socialTasks = []; //keeps track of social active tasks
 //config express and passport
 passport.serializeUser(function(user, done) { done(null, user); });
 passport.deserializeUser(function(obj, done) { done(null, obj); });
-// authServer.use(express.cookieParser());
-// authServer.use(express.session({ secret: 'SECRET' }));
-// authServer.use(passport.initialize());
-// authServer.use(passport.session());
-// authServer.use(express.bodyParser());
 
 // New express way
 authServer.use(cookieParser())
