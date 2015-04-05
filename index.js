@@ -4,13 +4,26 @@
 
 //set some vars
 var express = require('express');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('cookie-session');
+var methodOverride = require('method-override');
+
 var passport = require('passport');
 var util = require('util');
-var appName = require('../../package.json').name;
+
+// var appName = require('../../package.json').name;
+var appName = require('./package.json').name
+            || require('../../package.json').name;
+
 var ports = require('ports');
-var port = ports.getPort(appName+'-hoodie-plugin-social');
+var port = ports.getPort(appName + '-hoodie-plugin-social');
 var compareVersion = require('compare-version');
-var hoodieServerVer = require('../hoodie-server/package.json').version;
+
+// var hoodieServerVer = require('../hoodie-server/package.json').version;
+var hoodieServerVer = require('hoodie-server/package.json').version
+                    || require('../hoodie-server/package.json').version;
+
 var facebookStrategy = require('passport-facebook').Strategy;
 var twitterStrategy = require('passport-twitter').Strategy;
 var googleStrategy = require('passport-google-oauth').OAuth2Strategy; //from git://github.com/z0mt3c/passport-google-oauth.git
@@ -24,19 +37,24 @@ var socialTasks = []; //keeps track of social active tasks
 //config express and passport
 passport.serializeUser(function(user, done) { done(null, user); });
 passport.deserializeUser(function(obj, done) { done(null, obj); });
-authServer.use(express.cookieParser());
-authServer.use(express.session({ secret: 'SECRET' }));
+
+// New express way
+authServer.use(cookieParser())
+authServer.use(session({ key: 'MYKEY', signed: false, path: '/', secret: 'SECRET' }));
 authServer.use(passport.initialize());
-authServer.use(passport.session());
-authServer.use(express.bodyParser());
+authServer.use(bodyParser.urlencoded({ extended: true }));
+authServer.use(bodyParser.json());
 
 // Add headers to support CORS
 authServer.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', req.header('origin'));
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Headers', 'Authorization');
+    res.header('Access-Control-Allow-Origin', req.header('origin'));
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Headers', 'Authorization');
     next(); //pass to next layer of middleware
 });
+
+authServer.use(methodOverride());
+
 
 //run the rest in the hoodie context
 module.exports = function (hoodie, cb) {    
