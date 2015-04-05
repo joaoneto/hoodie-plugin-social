@@ -82,7 +82,7 @@ module.exports = function (hoodie, cb) {
         //check if we intend to destroy the current auth object
         if (req.query.destroy == 'true' && req.session.ref) {
             delete auths[req.session.ref];
-            req.session.destroy();
+            req.session = null;
             res.redirect(host+req.url.replace('destroy=true','destroy=false'));
             return false;
         }

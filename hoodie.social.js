@@ -128,7 +128,7 @@ Hoodie.extend(function(hoodie) {
         var settings = $.extend({
                 attemptLimit:     20,
                 interval:         3000,
-                authServerUri:    hoodie.baseUrl+'/_api/_auth',
+                authServerUri:    window.location.protocol + '//' + window.location.host+'/_api/_auth',
                 destroy:          true
             }, options);
             
