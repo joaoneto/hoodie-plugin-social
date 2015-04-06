@@ -42,6 +42,7 @@ passport.deserializeUser(function(obj, done) { done(null, obj); });
 authServer.use(cookieParser())
 authServer.use(session({ key: 'MYKEY', signed: false, path: '/', secret: 'SECRET' }));
 authServer.use(passport.initialize());
+authServer.use(passport.session());
 authServer.use(bodyParser.urlencoded({ extended: true }));
 authServer.use(bodyParser.json());
 
