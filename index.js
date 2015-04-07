@@ -39,7 +39,8 @@ passport.serializeUser(function(user, done) { done(null, user); });
 passport.deserializeUser(function(obj, done) { done(null, obj); });
 
 // New express way
-authServer.use(cookieParser())
+//TODO: Make KEY & SECRET setable via admin config
+authServer.use(cookieParser('SECRET'))
 authServer.use(session({ key: 'MYKEY', signed: false, path: '/', secret: 'SECRET' }));
 authServer.use(passport.initialize());
 authServer.use(passport.session());
@@ -195,20 +196,23 @@ module.exports = function (hoodie, cb) {
         }
     });
     
+    /*TODO: use a common callback route for all providers (authServer.get('/callback' ...) */
     //setup facebook specific authenicate and callback routes
     authServer.get('/auth/facebook', function(req, res, next) { res.redirect(host+'/auth?provider=facebook'); });
-    authServer.get('/facebook/callback', passport.authenticate('facebook'), function(req, res, next) {res.redirect(host+'/callback?provider=facebook');});
+    authServer.get('/facebook/callback', passport.authenticate('facebook'), function(req, res, next) { processCallback(req, res, next); });
 
     //setup twitter specific authenicate and callback routes
     authServer.get('/auth/twitter', function(req, res, next) { res.redirect(host+'/auth?provider=twitter'); });
-    authServer.get('/twitter/callback', passport.authenticate('twitter'), function(req, res, next) {res.redirect(host+'/callback?provider=twitter');});
+    authServer.get('/twitter/callback', passport.authenticate('twitter'), function(req, res, next) { processCallback(req, res, next); });
     
     //setup google specific authenicate and callback routes
     authServer.get('/auth/google', function(req, res, next) { res.redirect(host+'/auth?provider=google'); });
-    authServer.get('/google/callback', passport.authenticate('google'), function(req, res, next) {res.redirect(host+'/callback?provider=google');});
+    authServer.get('/google/callback', passport.authenticate('google'), function(req, res, next) { processCallback(req, res, next); });
 
-    //setup generic callback route (redirect destination from specific provider routes)
-    authServer.get('/callback', function(req, res, next) {
+    //callback handler (called from specific provider routes)
+    function processCallback(req, res, next) {
+        var provider = req.user.provider;
+        
         if (auths[req.session.ref]['id'] == undefined) {
             //if there's no email provided by the provider (like twitter), we will create our own id
             var id = (req.user.emails == undefined) ? req.user.displayName.replace(' ','_').toLowerCase()+'_'+req.user.id : req.user.emails[0].value;
@@ -222,7 +226,7 @@ module.exports = function (hoodie, cb) {
             
             if (!err) {
                 if (auths[req.session.ref]['method'] == 'login' && !auths[req.session.ref]['authenticated']) {
-                    auths[req.session.ref]['provider'] = req.query.provider;
+                    auths[req.session.ref]['provider'] = provider;
                     auths[req.session.ref]['id'] = id;
                     auths[req.session.ref]['full_profile'] = req.user;
                 
@@ -240,7 +244,7 @@ module.exports = function (hoodie, cb) {
                 
                 //always update connections
                 var connections = (data.connections) ? data.connections : {};
-                connections[req.query.provider] = auths[req.session.ref]['connections'][req.query.provider]; //first update from the stored connections
+                connections[provider] = auths[req.session.ref]['connections'][provider]; //first update from the stored connections
                 auths[req.session.ref]['connections'] = connections; //then feed the complete obeject back to the authObject
                 updateVals['connections'] = connections; //and make sure we store the latest
                                 
@@ -275,11 +279,11 @@ module.exports = function (hoodie, cb) {
                 
                 hoodie.account.add('user', userdoc, function(err, data){
                     //cycle back through so we can catch the fully created user
-                    if (!err) res.redirect(host+'/'+req.query.provider+'/callback');
+                    if (!err) res.redirect(host+'/'+provider+'/callback');
                 });
             }
         });
-    });
+    };
     
     //No need to keep this stuff around, so lets clean up after ourselves
     var cleanupInterval = setInterval(function() {cleanupAuths();},15000);
