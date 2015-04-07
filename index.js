@@ -184,7 +184,7 @@ module.exports = function (hoodie, cb) {
             invokeStrategy(req.query.provider, res);
         } else {
             if (req.query.provider == 'facebook') {
-                passport.authenticate(req.query.provider, { display: 'popup', scope: ['email','read_friendlists', 'read_stream', 'publish_actions'] })(req, res);
+                passport.authenticate(req.query.provider, { display: 'popup', scope: ['email', 'read_friendlists', 'user_friends', 'read_stream', 'publish_actions'] })(req, res);
             } else if (req.query.provider == 'google') {
                 passport.authenticate(req.query.provider, {
                     accessType: 'offline',
