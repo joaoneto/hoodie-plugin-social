@@ -184,7 +184,7 @@ module.exports = function (hoodie, cb) {
             invokeStrategy(req.query.provider, res);
         } else {
             if (req.query.provider == 'facebook') {
-                passport.authenticate(req.query.provider, { display: 'popup', scope: ['email', 'read_friendlists', 'user_friends', 'read_stream', 'publish_actions'] })(req, res);
+                passport.authenticate(req.query.provider, { display: 'popup', scope: ['email', 'read_friendlists', 'user_friends', 'read_stream', 'publish_actions'] })(req, res, next);
             } else if (req.query.provider == 'google') {
                 passport.authenticate(req.query.provider, {
                     accessType: 'offline',
@@ -208,7 +208,22 @@ module.exports = function (hoodie, cb) {
     //setup google specific authenicate and callback routes
     authServer.get('/auth/google', function(req, res, next) { res.redirect(host+'/auth?provider=google'); });
     authServer.get('/google/callback', passport.authenticate('google'), function(req, res, next) { processCallback(req, res, next); });
-
+    
+    // handle errors at the end of authServer app stack
+    authServer.use('/', function (err, req, res, next) {
+        console.error(err.stack);
+        res.send(
+            '<html>' +
+            '<body style="margin:0; padding:0; width:100%; height: 100%; display: table;">' +
+            '<div style="display:table-cell; text-align:center; vertical-align: middle;">' +
+            '<h1>Error</h1>' +
+            '<h2>' + (err.message || 'Internal Service Error') + '</h2>' +
+            '</div>' +
+            '</body>' +
+            '</html>'
+        );
+    });
+    
     //callback handler (called from specific provider routes)
     function processCallback(req, res, next) {
         var provider = req.user.provider;
@@ -299,6 +314,7 @@ module.exports = function (hoodie, cb) {
     //function to invoke a strategy
     function invokeStrategy(provider, res) {
         var config = hoodie.config.get(provider+'_config');
+        
         if (config.enabled) {
             var settings = config.settings;
             settings['passReqToCallback'] = true;
